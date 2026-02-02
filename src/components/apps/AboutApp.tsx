@@ -19,7 +19,7 @@ const skills = [
 ];
 
 export const AboutApp = () => {
-  const radius = 140; // Distance from center
+  const radius = 140; // Final distance from center
   const center = { x: 200, y: 200 }; // Center of the canvas (400x400 viewbox equivalent)
 
   return (
@@ -41,13 +41,13 @@ export const AboutApp = () => {
                 key={`line-${index}`}
                 x1={center.x}
                 y1={center.y}
-                x2={x}
+                x2={x} // These will be the final positions; line will animate drawing out
                 y2={y}
                 stroke="rgba(255, 255, 255, 0.2)"
                 strokeWidth="2"
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{ pathLength: 1, opacity: 1 }}
-                transition={{ duration: 1, delay: 0.5 }}
+                transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
               />
             );
           })}
@@ -60,38 +60,40 @@ export const AboutApp = () => {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 260, damping: 20 }}
         >
-          {/* Placeholder Avatar */}
-          <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-2xl">
-            S
-          </div>
+          <img 
+            src="https://api.dicebear.com/7.x/avataaars/svg?seed=Simon" 
+            alt="Avatar" 
+            className="w-full h-full object-cover bg-zinc-800"
+          />
         </motion.div>
 
         {/* Orbiting Skill Nodes */}
         {skills.map((skill, index) => {
           const angle = (index / skills.length) * 2 * Math.PI - Math.PI / 2;
-          const x = center.x + radius * Math.cos(angle); // Relative to SVG coordinate space
-          // We need to position divs absolutely based on percentage or pixels relative to container
-          // Container is 400x400. Center is 200,200.
-          // x, y are coordinates.
+          // Final positions
+          const finalX = center.x + radius * Math.cos(angle); 
+          const finalY = center.y + radius * Math.sin(angle);
           
           return (
             <motion.div
               key={skill.name}
               className="absolute z-10 w-12 h-12 -ml-6 -mt-6 rounded-full bg-zinc-800 border border-zinc-700 shadow-lg flex items-center justify-center group cursor-pointer"
-              style={{ 
-                left: x, 
-                top: center.y + radius * Math.sin(angle) 
+              // Animate from center (200px) to final position (finalX/Y)
+              initial={{ left: center.x, top: center.y, opacity: 0, scale: 0 }}
+              animate={{ left: finalX, top: finalY, opacity: 1, scale: 1 }}
+              transition={{ 
+                duration: 1, 
+                delay: 0.2 + index * 0.1, 
+                type: 'spring',
+                stiffness: 100
               }}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2 + index * 0.1, type: 'spring' }}
               whileHover={{ scale: 1.2, zIndex: 30 }}
             >
               <svg 
                 role="img" 
                 viewBox="0 0 24 24" 
                 className="w-6 h-6 fill-current text-zinc-400 group-hover:text-white transition-colors"
-                style={{ fill: skill.color }} // Apply brand color directly or via style
+                style={{ fill: skill.color }}
               >
                  <path d={skill.icon.path} />
               </svg>

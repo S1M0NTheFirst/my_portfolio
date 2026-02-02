@@ -23,6 +23,18 @@ export const PublicationsApp = () => {
 
   useEffect(() => {
     const fetchPublications = async () => {
+      // Check for placeholder config to avoid hanging requests
+      if (db.app.options.projectId?.includes('placeholder')) {
+        console.warn("Using mock data (Firebase not configured)");
+        setFiles([
+            { id: '1', title: 'SwiftBot_Multi_Robot_FL_CCGrid_2026_12_15.pdf', type: 'pdf', date: '2026-12-15', size: '2.4 MB', link: '#' },
+            { id: '2', title: 'Voice_Cloning_for_Speech_Detection.pdf', type: 'pdf', date: '2025-08-10', size: '1.8 MB', link: '#' },
+            { id: '3', title: 'Optimizing_Neural_Networks_Edge.pdf', type: 'pdf', date: '2024-11-22', size: '3.1 MB', link: '#' }
+        ]);
+        setLoading(false);
+        return;
+      }
+
       try {
         const querySnapshot = await getDocs(collection(db, 'publications'));
         const docs = querySnapshot.docs.map(doc => ({
