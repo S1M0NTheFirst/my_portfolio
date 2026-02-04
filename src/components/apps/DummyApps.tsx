@@ -32,41 +32,58 @@ export const AboutApp = () => (
   </div>
 );
 
-export const ProjectsApp = () => (
-  <div className="p-8 h-full bg-white dark:bg-zinc-900 overflow-y-auto text-zinc-800 dark:text-zinc-200">
-    <h2 className="text-3xl font-bold mb-6 border-b pb-2 border-zinc-200 dark:border-zinc-700">Projects</h2>
-    
-    <div className="space-y-8">
-      <div className="bg-zinc-50 dark:bg-zinc-800/50 p-6 rounded-lg border border-zinc-200 dark:border-zinc-700">
-        <h3 className="text-xl font-bold">Lingo AI: Full Stack Language Application</h3>
-        <p className="text-xs font-mono text-zinc-500 mb-2">TypeScript, Next.js, Firebase, OpenAI | June 2024 - Aug 2024</p>
-        <ul className="list-disc list-inside space-y-2 text-sm">
-          <li>Collaborated in an engineering team to build a responsive web application using React/Next.js and Tailwind CSS for real-time language tutoring.</li>
-          <li>Implemented Firebase for real-time database management and authentication, securing user session history and chat logs.</li>
-          <li>Utilized Git for version control and code reviews, ensuring smooth integration of frontend components with backend API services.</li>
-        </ul>
-      </div>
+export const ProjectsApp = () => {
+  const PROJECTS_DATA = [
+    {
+      title: "Lingo AI: Full Stack Language Application",
+      stack: "TypeScript, Next.js, Firebase, OpenAI",
+      date: "June 2024 – Aug. 2024",
+      description: [
+        "Collaborated in an engineering team to build a responsive web application using React/Next.js and Tailwind CSS for real-time language tutoring.",
+        "Implemented Firebase for real-time database management and authentication, securing user session history and chat logs.",
+        "Utilized Git for version control and code reviews, ensuring smooth integration of frontend components with backend API services.",
+      ],
+    },
+    {
+      title: "NestDetector: Cloud-Native Vision System",
+      stack: "Python, AWS, PyTorch",
+      date: "Jan. 2025 – May 2025",
+      description: [
+        "Designed a cloud-native vision system capable of processing large-scale datasets, leveraging AWS Lambda for serverless event triggers.",
+        "Implemented automated data validation and preprocessing scripts to ensure high-quality input for model training pipelines.",
+      ],
+    },
+    {
+      title: "SwiftBot (Research)",
+      stack: "Docker, Microservices, LLM Agents",
+      date: "Jan 2026 - Present",
+      description: [
+        "Architecting a distributed microservices platform that orchestrates robot tasks using Docker containers and LLM agents.",
+        "Reduced system cold-start latency by 95% (to 120ms) by implementing a warm-container orchestration strategy.",
+      ],
+    },
+  ];
 
-      <div className="bg-zinc-50 dark:bg-zinc-800/50 p-6 rounded-lg border border-zinc-200 dark:border-zinc-700">
-        <h3 className="text-xl font-bold">NestDetector: Cloud-Native Vision System</h3>
-        <p className="text-xs font-mono text-zinc-500 mb-2">Python, AWS, PyTorch | Jan 2025 - May 2025</p>
-        <ul className="list-disc list-inside space-y-2 text-sm">
-          <li>Designed a cloud-native vision system capable of processing large-scale datasets, leveraging AWS Lambda for serverless event triggers.</li>
-          <li>Implemented automated data validation and preprocessing scripts to ensure high-quality input for model training pipelines.</li>
-        </ul>
-      </div>
+  return (
+    <div className="p-8 h-full bg-white dark:bg-zinc-900 overflow-y-auto text-zinc-800 dark:text-zinc-200">
+      <h2 className="text-3xl font-bold mb-6 border-b pb-2 border-zinc-200 dark:border-zinc-700">Projects</h2>
       
-       <div className="bg-zinc-50 dark:bg-zinc-800/50 p-6 rounded-lg border border-zinc-200 dark:border-zinc-700">
-        <h3 className="text-xl font-bold">SwiftBot (Research)</h3>
-        <p className="text-xs font-mono text-zinc-500 mb-2">Docker, Microservices, LLM Agents | Jan 2026 - Present</p>
-        <ul className="list-disc list-inside space-y-2 text-sm">
-          <li>Architecting a distributed microservices platform that orchestrates robot tasks using Docker containers and LLM agents.</li>
-          <li>Reduced system cold-start latency by 95% (to 120ms) by implementing a warm-container orchestration strategy.</li>
-        </ul>
+      <div className="space-y-8">
+        {PROJECTS_DATA.map((project, index) => (
+          <div key={index} className="bg-zinc-50 dark:bg-zinc-800/50 p-6 rounded-lg border border-zinc-200 dark:border-zinc-700">
+            <h3 className="text-xl font-bold">{project.title}</h3>
+            <p className="text-xs font-mono text-zinc-500 mb-2">{project.stack} | {project.date}</p>
+            <ul className="list-disc list-inside space-y-2 text-sm">
+              {project.description.map((point, i) => (
+                <li key={i}>{point}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export const ContactApp = () => (
   <div className="p-8 h-full bg-white dark:bg-zinc-900 overflow-y-auto text-zinc-800 dark:text-zinc-200 flex flex-col items-center justify-center text-center">

@@ -10,7 +10,7 @@ interface ExperienceItem {
   color: string;
 }
 
-const experiences: ExperienceItem[] = [
+const EXPERIENCE_DATA: ExperienceItem[] = [
   {
     id: 'csulb-research',
     role: 'Software Research Engineer (Federated Learning)',
@@ -19,8 +19,8 @@ const experiences: ExperienceItem[] = [
     color: 'bg-blue-500',
     description: [
       'Architecting SwiftBot, a distributed microservices platform that orchestrates robot tasks using Docker containers and LLM agents.',
-      'Reduced system cold-start latency by 95% (to 120ms) by implementing a warm-container orchestration strategy.',
-      'Developing a custom DHT (Distributed Hash Table) overlay in Python to handle service discovery and fault tolerance.',
+      'Reduced system cold-start latency by 95% (to 120ms) by implementing a warm-container orchestration strategy and optimizing network overhead.',
+      'Developing a custom DHT (Distributed Hash Table) overlay in Python to handle service discovery and fault tolerance across distributed nodes.',
     ],
   },
   {
@@ -30,8 +30,8 @@ const experiences: ExperienceItem[] = [
     period: 'Dec 2024 - May 2025',
     color: 'bg-emerald-500',
     description: [
-      'Engineered a scalable AWS ETL pipeline (S3, Lambda) to ingest and process a 90 GB dataset of aerial imagery.',
-      'Deployed an EfficientDet object detection model into production using SageMaker for real-time environmental monitoring.',
+      'Engineered a scalable AWS ETL pipeline (S3, Lambda) to ingest and process a 90 GB dataset, automating the transformation of raw aerial imagery for analysis.',
+      'Deployed an EfficientDet object detection model into production using SageMaker, enabling real-time environmental monitoring on resource-constrained edge devices.',
     ],
   },
   {
@@ -41,8 +41,8 @@ const experiences: ExperienceItem[] = [
     period: 'May 2024 - May 2025',
     color: 'bg-amber-500',
     description: [
-      'Built a lightweight Federated Learning platform (HumanSys \'25) optimized for IoT devices.',
-      'Designed algorithms for workload prediction using SQL to aggregate and analyze historical performance data.',
+      'Built a lightweight Federated Learning platform (HumanSys \'25) optimized for resource-constrained IoT devices.',
+      'Designed algorithms for workload prediction using SQL to aggregate and analyze historical performance data, optimizing resource allocation for edge architectures.',
     ],
   },
 ];
@@ -124,7 +124,7 @@ export const ExperienceApp = () => {
         </h2>
         
         <div className="mt-4">
-            {experiences.map((exp, index) => (
+            {EXPERIENCE_DATA.map((exp, index) => (
                 <ExperienceNode key={exp.id} data={exp} index={index} />
             ))}
         </div>
