@@ -1,6 +1,7 @@
 import { Experience, Publication, Project } from '@/types/api';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+// Use NEXT_PUBLIC_API_URL if provided (for separate backend), otherwise default to relative /api for unified Vercel deployment
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 export async function getExperience(): Promise<Experience[]> {
   try {
