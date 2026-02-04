@@ -16,30 +16,37 @@ interface WindowState {
   hasBooted: boolean;
   windows: Window[];
   activeWindowId: string | null;
+  highlightedSkill: string | null; // For Spotlight skill linking
   setBooted: () => void;
   launchApp: (id: string, title: string, content: ReactNode) => void;
   closeApp: (id: string) => void;
   minimizeApp: (id: string) => void;
   toggleMaximize: (id: string) => void;
   focusApp: (id: string) => void;
+  setHighlightedSkill: (skill: string | null) => void;
 }
 
 export const useWindowStore = create<WindowState>((set) => ({
   hasBooted: false,
   windows: [],
   activeWindowId: null,
+  highlightedSkill: null,
 
   setBooted: () => set({ hasBooted: true }),
+
+  setHighlightedSkill: (skill) => set({ highlightedSkill: skill }),
 
   launchApp: (id, title, content) =>
     set((state) => {
       const existingWindow = state.windows.find((w) => w.id === id);
       if (existingWindow) {
-        // If minimized, restore it. If open, focus it.
+        // Restore if minimized, and focus
         return {
           activeWindowId: id,
           windows: state.windows.map((w) =>
-            w.id === id ? { ...w, isOpen: true, isMinimized: false, zIndex: getNextZIndex(state.windows) } : w
+            w.id === id 
+              ? { ...w, isOpen: true, isMinimized: false, zIndex: getNextZIndex(state.windows) } 
+              : w
           ),
         };
       }

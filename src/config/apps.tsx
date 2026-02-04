@@ -4,7 +4,8 @@ import { ProjectsApp, ContactApp } from '@/components/apps/DummyApps'; // Keepin
 import { AboutApp } from '@/components/apps/AboutApp';
 import { ExperienceApp } from '@/components/apps/ExperienceApp';
 import { PublicationsApp } from '@/components/apps/PublicationsApp';
-import InteractiveTerminal from '@/components/apps/InteractiveTerminal';
+import { ResumeApp } from '@/components/apps/ResumeApp';
+import { TerminalApp } from '@/components/apps/TerminalApp';
 
 export interface AppConfig {
   id: string;
@@ -19,17 +20,8 @@ export const apps: AppConfig[] = [
   { id: 'experience', title: 'Experience', icon: Briefcase, component: <ExperienceApp /> },
   { id: 'publications', title: 'Publications', icon: FolderOpen, component: <PublicationsApp /> },
   { id: 'contact', title: 'Contact', icon: Mail, component: <ContactApp /> },
-  { id: 'terminal', title: 'Terminal', icon: Terminal, component: <InteractiveTerminal /> },
-  { 
-    id: 'resume', 
-    title: 'Resume', 
-    icon: FileText, 
-    component: (
-      <div className="w-full h-full bg-zinc-100 flex items-center justify-center p-4">
-        <iframe src="/resume.pdf" className="w-full h-full rounded-lg shadow-inner" title="Resume" />
-      </div>
-    ) 
-  },
+  { id: 'terminal', title: 'Terminal', icon: Terminal, component: <TerminalApp /> },
+  { id: 'resume', title: 'Resume', icon: FileText, component: <ResumeApp /> },
 ];
 
 export const getApp = (id: string) => apps.find((app) => app.id === id);

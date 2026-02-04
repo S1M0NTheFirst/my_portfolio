@@ -1,150 +1,107 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { FileText, X, Loader2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { collection, getDocs, DocumentData } from 'firebase/firestore';
-import { db } from '../../firebase/config';
+import React, { useState } from 'react';
+import { FileText, Maximize2 } from 'lucide-react';
 
-interface File extends DocumentData {
+interface Publication {
   id: string;
   title: string;
   type: string;
-  date: string;
-  size: string;
-  link?: string;
+  link: string;
 }
 
+const PUBLICATIONS: Publication[] = [
+  {
+    id: '1',
+    title: "SwiftBot: A Lightweight Platform for Adaptive Multi-Robot Task Execution",
+    type: "Distributed Systems / Robotics",
+    link: "/paper/SwiftBot_Multi_Robot_FL_CCGrid_2026_12_15.pdf"
+  },
+  {
+    id: '2',
+    title: "MATLAB-Based Lightweight Workload Prediction via Machine Learning",
+    type: "Machine Learning / Cloud Computing",
+    link: "/paper/IEEE Final.pdf"
+  },
+  {
+    id: '3',
+    title: "Pronunciation Deviation Analysis Through Voice Cloning",
+    type: "Audio Processing / AI",
+    link: "/paper/voice_cloning_for_speach_detection.pdf"
+  }
+];
+
 export const PublicationsApp = () => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [files, setFiles] = useState<File[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [selectedPaper, setSelectedPaper] = useState<Publication | null>(null);
 
-  useEffect(() => {
-    const fetchPublications = async () => {
-      // Check for placeholder config to avoid hanging requests
-      if (db.app.options.projectId?.includes('placeholder')) {
-        console.warn("Using mock data (Firebase not configured)");
-        setFiles([
-            { id: '1', title: 'SwiftBot_Multi_Robot_FL_CCGrid_2026_12_15.pdf', type: 'pdf', date: '2026-12-15', size: '2.4 MB', link: '#' },
-            { id: '2', title: 'Voice_Cloning_for_Speech_Detection.pdf', type: 'pdf', date: '2025-08-10', size: '1.8 MB', link: '#' },
-            { id: '3', title: 'Optimizing_Neural_Networks_Edge.pdf', type: 'pdf', date: '2024-11-22', size: '3.1 MB', link: '#' }
-        ]);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const querySnapshot = await getDocs(collection(db, 'publications'));
-        const docs = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })) as File[];
-        setFiles(docs);
-      } catch (err) {
-        console.error("Error fetching publications:", err);
-        setError("Failed to load publications.");
-        // Fallback to mock data for demo/offline
-        setFiles([
-            { id: '1', title: 'Offline_Mode_Paper.pdf', type: 'pdf', date: 'N/A', size: '0 KB', link: '#' }
-        ]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPublications();
-  }, []);
+  const handleOpenFullScreen = () => {
+    if (selectedPaper) {
+      window.open(selectedPaper.link, '_blank');
+    }
+  };
 
   return (
-    <div className="flex flex-col h-full bg-zinc-50 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200">
-      {/* Toolbar */}
-      <div className="h-10 border-b border-zinc-200 dark:border-zinc-700 flex items-center px-4 gap-4 bg-zinc-100 dark:bg-zinc-800/50">
-         <div className="flex gap-1">
-           <div className="w-2 h-2 rounded-full bg-zinc-400"></div>
-           <div className="w-2 h-2 rounded-full bg-zinc-400"></div>
+    <div className="flex h-full bg-zinc-50 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 overflow-hidden">
+      
+      {/* Left Sidebar: List */}
+      <div className="w-1/3 min-w-[250px] border-r border-zinc-200 dark:border-zinc-700 flex flex-col bg-zinc-100 dark:bg-zinc-800/50">
+         {/* Toolbar */}
+         <div className="h-10 border-b border-zinc-200 dark:border-zinc-700 flex items-center px-4 gap-2 bg-zinc-100 dark:bg-zinc-800 sticky top-0 z-10">
+             <span className="text-xs text-zinc-500 font-medium uppercase tracking-wider">Publications</span>
          </div>
-         <span className="text-xs text-zinc-500 font-medium">~/Documents/Publications</span>
-      </div>
-
-      {/* File Grid */}
-      <div className="flex-1 p-4 overflow-y-auto">
-        {loading ? (
-            <div className="w-full h-full flex items-center justify-center text-zinc-400">
-                <Loader2 className="animate-spin mr-2" /> Loading...
-            </div>
-        ) : (
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 content-start">
-                {files.map((file) => (
-                <div 
-                    key={file.id}
-                    className="group flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 cursor-pointer transition-colors"
-                    onClick={() => setSelectedFile(file)}
-                >
-                    <div className="w-16 h-20 bg-white border border-zinc-300 shadow-sm flex flex-col items-center justify-center relative">
-                    <div className="absolute top-0 right-0 w-4 h-4 bg-red-500 flex items-center justify-center rounded-bl-md">
-                        <span className="text-[8px] text-white font-bold">PDF</span>
-                    </div>
-                    <FileText className="text-zinc-400 w-8 h-8" />
-                    <div className="w-10 h-1 bg-zinc-100 mt-2"></div>
-                    <div className="w-8 h-1 bg-zinc-100 mt-1"></div>
-                    </div>
-                    <span className="text-xs text-center font-medium group-hover:text-blue-600 dark:group-hover:text-blue-400 break-words w-full px-1 line-clamp-2">
-                    {file.title}
+         
+         <div className="flex-1 overflow-y-auto p-2 space-y-1">
+            {PUBLICATIONS.map((paper) => (
+              <div 
+                key={paper.id}
+                onClick={() => setSelectedPaper(paper)}
+                className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors ${selectedPaper?.id === paper.id ? 'bg-blue-500 text-white shadow-sm' : 'hover:bg-zinc-200 dark:hover:bg-zinc-700'}`}
+              >
+                 <FileText className={`w-5 h-5 mt-0.5 flex-shrink-0 ${selectedPaper?.id === paper.id ? 'text-white' : 'text-zinc-400'}`} />
+                 <div className="flex flex-col gap-0.5 min-w-0">
+                    <span className={`text-sm font-medium leading-tight line-clamp-2 ${selectedPaper?.id === paper.id ? 'text-white' : 'text-zinc-800 dark:text-zinc-200'}`}>
+                        {paper.title}
                     </span>
-                </div>
-                ))}
-            </div>
-        )}
+                    <span className={`text-[10px] uppercase tracking-wide truncate ${selectedPaper?.id === paper.id ? 'text-blue-100' : 'text-zinc-500'}`}>
+                        {paper.type}
+                    </span>
+                 </div>
+              </div>
+            ))}
+         </div>
+         
+         <div className="p-3 border-t border-zinc-200 dark:border-zinc-700 text-[10px] text-zinc-400 text-center">
+            {PUBLICATIONS.length} documents
+         </div>
       </div>
 
-      {/* Preview Modal */}
-      <AnimatePresence>
-        {selectedFile && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="absolute inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-8"
-            onClick={(e) => e.stopPropagation()}
-          >
-             <div className="bg-white dark:bg-zinc-800 w-full max-w-2xl h-[80%] rounded-lg shadow-2xl flex flex-col overflow-hidden relative">
-                <div className="h-10 border-b border-zinc-200 dark:border-zinc-700 flex items-center justify-between px-4 bg-zinc-100 dark:bg-zinc-900">
-                   <span className="font-medium text-sm truncate max-w-[80%]">{selectedFile.title}</span>
-                   <button onClick={() => setSelectedFile(null)} className="p-1 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded">
-                      <X size={16} />
-                   </button>
-                </div>
-                <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-                   <FileText size={64} className="text-zinc-300 mb-4" />
-                   <h3 className="text-xl font-bold mb-2">Preview Not Available</h3>
-                   <p className="text-zinc-500 text-sm max-w-xs">
-                     This is a prototype. In a real app, this would render the PDF.<br/>
-                     <span className="italic text-xs mt-2 block">
-                        (Connected to Firebase: {selectedFile.id})
-                     </span>
-                   </p>
-                   <div className="mt-8 text-xs text-zinc-400 font-mono">
-                     Size: {selectedFile.size} • Created: {selectedFile.date}
-                   </div>
-                   {selectedFile.link && (
-                       <a 
-                         href={selectedFile.link} 
-                         target="_blank" 
-                         rel="noreferrer"
-                         className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition-colors"
-                       >
-                           Download PDF
-                       </a>
-                   )}
-                </div>
+      {/* Right Pane: Preview */}
+      <div className="flex-1 flex flex-col h-full bg-zinc-200 dark:bg-zinc-900/50 relative">
+          {selectedPaper ? (
+             <>
+               <div className="absolute top-4 right-4 z-10">
+                  <button 
+                    onClick={handleOpenFullScreen}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-black/70 hover:bg-black text-white text-xs rounded-full backdrop-blur transition-colors shadow-lg"
+                  >
+                    <Maximize2 size={12} />
+                    Open Full Screen
+                  </button>
+               </div>
+               <iframe 
+                 src={selectedPaper.link} 
+                 className="w-full h-full border-0" 
+                 title="PDF Preview"
+               />
+             </>
+          ) : (
+             <div className="flex-1 flex flex-col items-center justify-center text-zinc-400">
+                <FileText size={48} className="mb-4 opacity-20" />
+                <p className="text-sm font-medium">Select a paper to preview</p>
              </div>
-             {/* Click outside to close */}
-             <div className="absolute inset-0 -z-10" onClick={() => setSelectedFile(null)}></div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+      </div>
+
     </div>
   );
 };

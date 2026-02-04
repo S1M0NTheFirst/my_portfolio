@@ -7,6 +7,7 @@ import WindowFrame from './WindowFrame';
 import ContextMenu from './ContextMenu';
 import { useWindowStore } from '@/store/windowStore';
 import { apps } from '@/config/apps';
+import { Spotlight } from './Spotlight';
 
 interface DesktopProps {
   children?: React.ReactNode;
@@ -18,6 +19,9 @@ const Desktop: React.FC<DesktopProps> = ({ children }) => {
   
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ x: 0, y: 0 });
+
+  // Fix: Check if any window is maximized to lift the layer above the Dock
+  const isAnyMaximized = windows.some(w => w.isMaximized);
 
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -41,20 +45,24 @@ const Desktop: React.FC<DesktopProps> = ({ children }) => {
     <div 
       ref={desktopRef}
       onContextMenu={handleContextMenu}
-      // Made background slightly darker/richer while keeping it "light theme"
-      className="relative h-screen w-full overflow-hidden bg-gradient-to-br from-slate-300 via-indigo-200 to-cyan-200 selection:bg-indigo-500/30 text-slate-900"
+      className="relative h-screen w-full overflow-hidden bg-gradient-to-br from-slate-300 via-indigo-200 to-cyan-200 dark:bg-slate-950 dark:from-slate-900 dark:to-zinc-900 selection:bg-indigo-500/30 text-slate-900 dark:text-zinc-100 transition-colors duration-500"
     >
       {/* Top Bar */}
       <TopBar />
 
-      {/* Desktop Widget - High Contrast */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 text-center pointer-events-none z-0">
-          <h1 className="text-6xl font-bold tracking-tighter text-slate-800 drop-shadow-sm select-none">
+      {/* Desktop Hero Text */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 text-center pointer-events-none z-0 flex flex-col items-center">
+          <h1 className="text-7xl font-bold tracking-tighter text-slate-800 dark:text-white/90 drop-shadow-sm select-none">
             Hi, I&apos;m Simon.
           </h1>
-          <p className="mt-4 text-xl font-medium text-slate-700 tracking-widest uppercase select-none drop-shadow-sm">
-            Master&apos;s Student in CS at CSULB | Full-Stack Developer
-          </p>
+          <div className="mt-6 flex flex-col gap-2">
+            <p className="text-2xl font-medium text-slate-500 dark:text-zinc-400 tracking-wide select-none drop-shadow-sm">
+              Master&apos;s Student in CS at CSULB | Full-Stack Developer
+            </p>
+            <p className="text-2xl font-medium text-slate-500 dark:text-zinc-400 tracking-wide select-none drop-shadow-sm">
+              Machine Learning Engineer | Deep Learning Researcher
+            </p>
+          </div>
       </div>
 
       {/* Desktop Icons Grid */}
@@ -67,7 +75,7 @@ const Desktop: React.FC<DesktopProps> = ({ children }) => {
       </div>
 
       {/* Windows Layer */}
-      <main className="relative h-full w-full z-10 pointer-events-none">
+      <main className={`relative h-full w-full pointer-events-none transition-all duration-300 ${isAnyMaximized ? 'z-[100]' : 'z-10'}`}>
          {windows.map((window) => (
             <div key={window.id} className="pointer-events-auto">
                <WindowFrame window={window} />
@@ -77,6 +85,8 @@ const Desktop: React.FC<DesktopProps> = ({ children }) => {
 
       {/* Dock and other children */}
       {children}
+
+      <Spotlight />
 
       <ContextMenu 
         x={menuPos.x} 
